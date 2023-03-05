@@ -28,6 +28,8 @@ public class Main {
         try {
             // settle Ivan to Kyiv
             h1.changeResidence(c1);
+
+            // hello
             // settle Vasya to Kyiv
             h2.changeResidence(c1);
         } catch (CitySettleException e) {
