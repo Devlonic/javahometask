@@ -2,6 +2,7 @@ import people.Builder;
 import people.Human;
 import people.Pilot;
 import people.Sailor;
+import sales.Product;
 
 import java.util.Random;
 
@@ -26,5 +27,12 @@ public class Main {
 
         /////////////////////////////////////////////////////////////////////////
         // task2
+
+        /////////////////////////////////////////////////////////////////////////
+        // task3
+        Product p1 = new Product(642, "dollars", "cents", "Cool chocolate");
+        System.out.println(p1.toString());
+        p1.decreasePrice(156);
+        System.out.println(p1.toString());
     }
 }
