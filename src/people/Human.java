@@ -8,15 +8,12 @@
 
 package people;
 
-import infrastructure.settlements.City;
-
 public class Human {
     private static int totalCreated = 0;
 
     protected String name;
     private int age;
     private float weight;
-    private City residence;
 
     public int getAge() {
         return age;
@@ -74,15 +71,5 @@ public class Human {
 
     public void listen(String text) {
         this.talk("I HEARD:\t" + text);
-    }
-
-    public void changeResidence(City newResidence) {
-        // if human is already settled - evict it from city
-        if(this.residence != newResidence && this.residence != null) {
-            this.residence.evict(this);
-        }
-
-        newResidence.settle(this);
-        this.residence = newResidence;
     }
 }
