@@ -1,3 +1,4 @@
+import devices.*;
 import people.Builder;
 import people.Human;
 import people.Pilot;
@@ -34,5 +35,24 @@ public class Main {
         System.out.println(p1.toString());
         p1.decreasePrice(156);
         System.out.println(p1.toString());
+
+        /////////////////////////////////////////////////////////////////////////
+        // task4
+        Device[] devices = new Device[] {
+                new Car("CoolCar2019", "WMB"),
+                new Car("CoolCar2017A", "WMB"),
+                new MicrowaveOven("MWO4561"),
+                new Teapot("TPT2"),
+                new Train("TRAIN MORRIS 2", 16.33f),
+                new Car("CoolCar2023S", "WMB"),
+        };
+
+        for (var d: devices) {
+            System.out.println("\n================================");
+            d.show();
+            d.desc();
+            d.sound();
+            System.out.println("================================\n");
+        }
     }
 }
