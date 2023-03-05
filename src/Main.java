@@ -1,93 +1,48 @@
-import collections.generic.MyList;
-import infrastructure.countries.Country;
-import infrastructure.settlements.CitySettleException;
-import items.Book;
-import items.Car;
-import math.Fraction;
-import people.Human;
-import infrastructure.settlements.City;
+import collections.MyArray;
+
+import java.util.Timer;
 
 public class Main {
     public static void main(String[] args) {
-        /////////////////////////////////////////////////////////////////////////
+        // home task 4
+
         // task1
-        Human h1 = new Human(19, 63.56f, "Ivan");
-        Human h2 = new Human(20, 68.32f, "Vasya");
-        Human h3 = new Human(25, 62.72f, "Akakiy");
-        Human h4 = new Human(72, 49.23f, "Afanasiy");
+        MyArray<Integer> arr = new MyArray<Integer>();
+        arr.fill(10, MyArray.randomIntGenerator());
+        arr.print();
 
-        h1.talk("Hello, " + h2.getName(), h2);
-        h2.talk("Hi, " + h1.getName(), h1);
+        MyArray<Integer> arr3 = new MyArray<Integer>();
+        arr3.fill(4, MyArray.consoleInputIntGenerator());
+        arr3.print();
 
-        /////////////////////////////////////////////////////////////////////////
-        // task2
-        City c1 = new City("Kyiv", 3);
-        City c2 = new City("Luts'k", 2);
+        int min = arr3.getMin(MyArray.integerComparator());
+        System.out.println("Min is " + min);
 
-        // this section shall not throw any exception
-        try {
-            // settle Ivan to Kyiv
-            h1.changeResidence(c1);
+        int max = arr3.getMax(MyArray.integerComparator());
+        System.out.println("Max is " + max);
 
-            // settle Vasya to Kyiv
-            h2.changeResidence(c1);
-        } catch (CitySettleException e) {
-            System.out.println("ERROR with settle to " + e.getCity().getName() + ":\t" + e.getMessage());
-        }
+        double avg = arr3.getAverage();
+        System.out.println("Avg is " + avg);
 
-        try {
-            // throws CityHumanAlreadySettledException because h1 is already settled to c1
-            h1.changeResidence(c1);
-        } catch (CitySettleException e) {
-            System.out.println("ERROR with settle to " + e.getCity().getName() + ":\t" + e.getMessage());
-        }
+        arr3.sortDescEmbedded();
+        arr3.print();
+
+        arr3.sortAscEmbedded();
+        arr3.print();
+
+        int key = -2;
+        int index = arr3.findIndexEmbedded(key);
+        System.out.printf("Index of '%s' is '%d'\n", key, index);
 
         try {
-            // settle Akakiy to Kyiv
-            h3.changeResidence(c1);
-
-            // throws CityOverflowException because human limit of this city is set to 3
-            h4.changeResidence(c1);
-        } catch (CitySettleException e) {
-            System.out.println("ERROR with settle to " + e.getCity().getName() + ":\t" + e.getMessage());
+            arr3.replace(key, -22222);
+            arr3.print();
+        } catch (ArrayStoreException e) {
+            System.out.println("ERROR " + e.toString());
         }
 
-        try {
-            // h1 is already settled in c1, so we want to change his city to c2
-            h1.changeResidence(c2);
-        } catch (CitySettleException e) {
-            System.out.println("ERROR with settle to " + e.getCity().getName() + ":\t" + e.getMessage());
-        }
 
-        /////////////////////////////////////////////////////////////////////////
-        //task3
-        Country country1 = new Country("Ukraine");
-        country1.addCity(c1);
-        country1.addCity(c2);
-
-        /////////////////////////////////////////////////////////////////////////
-        //task4
-
-        Fraction f1 = new Fraction(36,488);
-        Fraction f2 = new Fraction(5,56);
-        Fraction f3 = new Fraction(9,8,4);
-
-        var x = Fraction.add(f1, f2);
-        System.out.println(x.toString());
-
-        var y = Fraction.add(x, 100);
-        System.out.println(y.toString());
-
-        /////////////////////////////////////////////////////////////////////////
-        //task5
-        Book b = new Book();
-        b.print(System.out);
-
-        /////////////////////////////////////////////////////////////////////////
-        //task6
-        Car c = new Car();
-        c.print(System.out);
-
-        // home task 2
+        int index2 = arr3.findIndexEmbedded(-22222);
+        System.out.printf("Index of '%s' is '%d'\n", -22222, index2);
     }
 }
