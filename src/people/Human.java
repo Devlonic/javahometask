@@ -8,7 +8,7 @@
 
 package people;
 
-public class Human {
+public abstract class Human {
     private static int totalCreated = 0;
 
     protected String name;
@@ -72,4 +72,8 @@ public class Human {
     public void listen(String text) {
         this.talk("I HEARD:\t" + text);
     }
+
+    public abstract void work();
+    public abstract void work(Object params);
 }
+

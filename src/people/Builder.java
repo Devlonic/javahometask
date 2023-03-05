@@ -20,3 +20,5 @@ public class Builder extends Human {
         this.buildingSkill++;
     }
 }
+
+
