@@ -1,11 +1,14 @@
 package collections;
 
+import math.MyMath;
+import math.MySortable;
+
 import java.util.Comparator;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.function.Function;
 
-public abstract class MyArrayBase<T extends Number> {
+public abstract class MyArrayBase<T extends Number> implements MyMath<T>, MySortable {
     protected static Random random = new Random();
 
     // generators
