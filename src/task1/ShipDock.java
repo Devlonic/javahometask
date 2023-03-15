@@ -9,6 +9,7 @@ public class ShipDock {
         private static Random random = new Random();
         private String name;
         private String lastName;
+        private int waitingTimeHours = 0;
 
         public Person() {
             this.name = getRandomName();
@@ -28,9 +29,17 @@ public class ShipDock {
             return lastNames[random.nextInt(lastNames.length)];
         }
 
+        public void increaseTime() {
+            waitingTimeHours++;
+        }
+
         @Override
         public String toString() {
             return String.format("Person %s %s", this.name, this.lastName);
+        }
+
+        public int getWaitingTimeHours() {
+            return waitingTimeHours;
         }
     }
     class Ship {
@@ -47,7 +56,9 @@ public class ShipDock {
             this.id = totalCreated++;
             this.persons = new LinkedHashSet<>();
             this.seatCount = random.nextInt(8) + 2;
-            this.hoursBeforeDispatch = random.nextInt(2) + 1;
+            //this.hoursBeforeDispatch = random.nextInt(2) + 1;
+
+            this.hoursBeforeDispatch = 1;
         }
 
         public boolean seatInto(Person person) {
@@ -55,16 +66,6 @@ public class ShipDock {
                 return false;
 
             return this.persons.add(person);
-        }
-
-        public int getOutOfShip(int personsCount) {
-            int countGettedOut = 0;
-            for (int i = 0; i < personsCount; i++) {
-                // remove first human
-                if(this.persons.removeIf(p->true))
-                    countGettedOut++;
-            }
-            return countGettedOut;
         }
 
         public boolean hasFreeSeats() {
@@ -86,7 +87,11 @@ public class ShipDock {
         private long countShipsInDock;
         private long countDispatchedShips;
 
-        public ShipDockState(int iteration, int hour, long countNewShips, long countNewPersons, long countSeatedPersons, long countUnseatedPersons, long countShipsInDock, long countDispatchedShips) {
+
+
+        private double averageWaitingTime;
+
+        public ShipDockState(int iteration, int hour, long countNewShips, long countNewPersons, long countSeatedPersons, long countUnseatedPersons, long countShipsInDock, long countDispatchedShips, double averageWaitingTime) {
             this.iteration = iteration;
             this.hour = hour;
             this.countNewShips = countNewShips;
@@ -95,6 +100,7 @@ public class ShipDock {
             this.countUnseatedPersons = countUnseatedPersons;
             this.countShipsInDock = countShipsInDock;
             this.countDispatchedShips = countDispatchedShips;
+            this.averageWaitingTime = averageWaitingTime;
         }
 
         public int getIteration() {
@@ -129,6 +135,10 @@ public class ShipDock {
             return countDispatchedShips;
         }
 
+        public double getAverageWaitingTime() {
+            return averageWaitingTime;
+        }
+
         @Override
         public String toString() {
             return String.format("iteration: %d\t" +
@@ -138,6 +148,7 @@ public class ShipDock {
                             "countSeatedPersons: %d\t" +
                             "countUnseatedPersons: %d\t" +
                             "countDispatchedShips: %d\t" +
+                            "average waiting time: %f\t" +
                             "countShipsInDock: %d\t",
                     this.iteration,
                     this.hour,
@@ -146,6 +157,7 @@ public class ShipDock {
                     this.countSeatedPersons,
                     this.countUnseatedPersons,
                     this.countDispatchedShips,
+                    this.averageWaitingTime,
                     this.countShipsInDock);
         }
     }
@@ -167,6 +179,7 @@ public class ShipDock {
     private LinkedHashSet<Ship> availableShips = new LinkedHashSet<>();
     // init hour is 0 AM
     private int currentHour = 0;
+    private int currentIteration = 0;
 
     private Set<Person> getPersonsInCurrentHour() {
         var p = new HashSet<Person>();
@@ -194,7 +207,7 @@ public class ShipDock {
     // no stop possible
     public void start() throws InterruptedException {
         // one iteration is 1 hour
-        int iteration = 0;
+        currentIteration = 0;
         while(true) {
             // get incoming persons and ships for current hour
             var newPersons = getPersonsInCurrentHour();
@@ -215,6 +228,7 @@ public class ShipDock {
                 }
             });
 
+            // dispatch ships
             AtomicInteger countDispatched = new AtomicInteger();
             availableShips.removeIf(s->{
                 if(s.hoursBeforeDispatch--==0) {
@@ -225,16 +239,25 @@ public class ShipDock {
                 return false;
             });
 
+            // calculate average waiting time
+            this.waitingForShipPersons.forEach(p->p.increaseTime());
+            double averageWaitingTime;
+
+            if(this.waitingForShipPersons.size() > 0)
+                averageWaitingTime = this.waitingForShipPersons.stream().mapToDouble(Person::getWaitingTimeHours).average().getAsDouble();
+            else
+                averageWaitingTime = 0;
+
             this.displayCurrentState(
                     new ShipDockState(
-                            iteration,
+                            currentIteration,
                             currentHour,
                             newShips.size(),
                             newPersons.size(),
                             countSeated.get(),
                             this.waitingForShipPersons.size(),
                             this.availableShips.size(),
-                            countDispatched.get()));
+                            countDispatched.get(), averageWaitingTime));
 
             if(currentHour < 23)
                 currentHour++;
@@ -243,7 +266,7 @@ public class ShipDock {
 
             TimeUnit.SECONDS.sleep(1);
 
-            iteration++;
+            currentIteration++;
         }
     }
 }
