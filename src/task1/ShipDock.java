@@ -84,8 +84,9 @@ public class ShipDock {
         private long countSeatedPersons;
         private long countUnseatedPersons;
         private long countShipsInDock;
+        private long countDispatchedShips;
 
-        public ShipDockState(int iteration, int hour, long countNewShips, long countNewPersons, long countSeatedPersons, long countUnseatedPersons, long countShipsInDock) {
+        public ShipDockState(int iteration, int hour, long countNewShips, long countNewPersons, long countSeatedPersons, long countUnseatedPersons, long countShipsInDock, long countDispatchedShips) {
             this.iteration = iteration;
             this.hour = hour;
             this.countNewShips = countNewShips;
@@ -93,6 +94,7 @@ public class ShipDock {
             this.countSeatedPersons = countSeatedPersons;
             this.countUnseatedPersons = countUnseatedPersons;
             this.countShipsInDock = countShipsInDock;
+            this.countDispatchedShips = countDispatchedShips;
         }
 
         public int getIteration() {
@@ -123,6 +125,9 @@ public class ShipDock {
             return countShipsInDock;
         }
 
+        public long getCountDispatchedShips() {
+            return countDispatchedShips;
+        }
 
         @Override
         public String toString() {
@@ -132,6 +137,7 @@ public class ShipDock {
                             "countNewPersons: %d\t" +
                             "countSeatedPersons: %d\t" +
                             "countUnseatedPersons: %d\t" +
+                            "countDispatchedShips: %d\t" +
                             "countShipsInDock: %d\t",
                     this.iteration,
                     this.hour,
@@ -139,6 +145,7 @@ public class ShipDock {
                     this.countNewPersons,
                     this.countSeatedPersons,
                     this.countUnseatedPersons,
+                    this.countDispatchedShips,
                     this.countShipsInDock);
         }
     }
@@ -208,6 +215,16 @@ public class ShipDock {
                 }
             });
 
+            AtomicInteger countDispatched = new AtomicInteger();
+            availableShips.removeIf(s->{
+                if(s.hoursBeforeDispatch--==0) {
+                    countDispatched.getAndIncrement();
+                    return true;
+                }
+
+                return false;
+            });
+
             this.displayCurrentState(
                     new ShipDockState(
                             iteration,
@@ -216,7 +233,8 @@ public class ShipDock {
                             newPersons.size(),
                             countSeated.get(),
                             this.waitingForShipPersons.size(),
-                            this.availableShips.size()));
+                            this.availableShips.size(),
+                            countDispatched.get()));
 
             if(currentHour < 23)
                 currentHour++;
