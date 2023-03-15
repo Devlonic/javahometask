@@ -2,6 +2,7 @@ package task1;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShipDock {
     class Person {
@@ -75,6 +76,48 @@ public class ShipDock {
             return String.format("Ship %d total seats: %d used seats: %d", this.id, this.seatCount, this.persons.stream().count());
         }
     }
+    class ShipDockState {
+        private int iteration;
+        private int hour;
+        private long countNewShips;
+        private long countNewPersons;
+        private long countSeatedPersons;
+        private long countUnseatedPersons;
+
+        public ShipDockState(int iteration, int hour, long countNewShips, long countNewPersons, long countSeatedPersons, long countUnseatedPersons) {
+            this.iteration = iteration;
+            this.hour = hour;
+            this.countNewShips = countNewShips;
+            this.countNewPersons = countNewPersons;
+            this.countSeatedPersons = countSeatedPersons;
+            this.countUnseatedPersons = countUnseatedPersons;
+        }
+
+        public int getIteration() {
+            return iteration;
+        }
+
+        public int getHour() {
+            return hour;
+        }
+
+        public long getCountNewShips() {
+            return countNewShips;
+        }
+
+        public long getCountNewPersons() {
+            return countNewPersons;
+        }
+
+        public long getCountSeatedPersons() {
+            return countSeatedPersons;
+        }
+
+        public long getCountUnseatedPersons() {
+            return countUnseatedPersons;
+        }
+    }
+
     private static Random random = new Random();
 
     public ShipDock(double[] personsPerHour, double[] shipsPerHour) {
@@ -90,7 +133,6 @@ public class ShipDock {
 
     private Queue<Person> waitingForShipPersons = new ArrayDeque<>();
     private LinkedHashSet<Ship> availableShips = new LinkedHashSet<>();
-
     // init hour is 0 AM
     private int currentHour = 0;
 
@@ -113,9 +155,26 @@ public class ShipDock {
         return p;
     }
 
+    private void displayCurrentState(ShipDockState state) {
+        System.out.printf(
+                "iteration: %d\t" +
+                "hour: %d\t" +
+                "countNewShips: %d\t" +
+                "countNewPersons: %d\t" +
+                "countSeatedPersons: %d\t" +
+                "countUnseatedPersons: %d\t\n",
+                state.iteration,
+                state.hour,
+                state.countNewShips,
+                state.countNewPersons,
+                state.countSeatedPersons,
+                state.countUnseatedPersons);
+    }
+
     // no stop possible
     public void start() throws InterruptedException {
         // one iteration is 1 hour
+        int iteration = 0;
         while(true) {
             // get incoming persons and ships for current hour
             var newPersons = getPersonsInCurrentHour();
@@ -126,13 +185,24 @@ public class ShipDock {
             waitingForShipPersons.addAll(newPersons);
 
             // put waiting persons to available ships
+            AtomicInteger countSeated = new AtomicInteger();
             availableShips.forEach(s-> {
                 while(this.waitingForShipPersons.stream().count() > 0 && s.hasFreeSeats()) {
                     var person = this.waitingForShipPersons.poll();
 
                     s.seatInto(person);
+                    countSeated.getAndIncrement();
                 }
             });
+
+            this.displayCurrentState(
+                    new ShipDockState(
+                            iteration,
+                            currentHour,
+                            newShips.stream().count(),
+                            newPersons.stream().count(),
+                            countSeated.get(),
+                            this.waitingForShipPersons.stream().count()));
 
             if(currentHour < 23)
                 currentHour++;
@@ -140,6 +210,8 @@ public class ShipDock {
                 currentHour = 0;
 
             TimeUnit.SECONDS.sleep(1);
+
+            iteration++;
         }
     }
 }
