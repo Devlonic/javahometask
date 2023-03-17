@@ -14,7 +14,7 @@ public class CurrencyExchanger {
             return originAmount * targetCurrency.ratioFromMainCurrency;
         else if(targetCurrency == Currencies.mainCurrency)
             return originAmount * originCurrency.ratioToMainCurrency;
-        else return 0;
+        else throw new UnsupportedOperationException();
     }
 
     public enum Currencies {
