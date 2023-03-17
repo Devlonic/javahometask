@@ -17,8 +17,12 @@ public class RightTriangle extends Triangle {
         }
     }
 
+    private static double getHypotenuse(double legA, double legB) {
+        return Math.sqrt((Math.pow(legA, 2) + Math.pow(legB, 2)));
+    }
+
     public RightTriangle(double legA, double legB) {
-        super(legA, legB);
+        super(legA, legB, getHypotenuse(legA, legB));
         this.throwOnInvalid();
     }
 
