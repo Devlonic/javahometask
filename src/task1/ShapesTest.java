@@ -1,6 +1,9 @@
 package task1;
 
 import org.junit.Test;
+import task1.paralelograms.rectangles.Rectangle;
+import task1.paralelograms.rectangles.Square;
+import task1.triangles.RightTriangle;
 
 import static org.junit.Assert.assertEquals;
 

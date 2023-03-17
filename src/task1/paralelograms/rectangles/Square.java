@@ -1,8 +1,7 @@
-package task1;
+package task1.paralelograms.rectangles;
 
-public class Square extends Rectangle {
+public final class Square extends Rectangle {
     enum SquareState implements ShapeState {
-        OK(""),
         WRONG_SQUARE_MEASURES("Square sides must be equal");
 
         private final String description;
@@ -23,14 +22,7 @@ public class Square extends Rectangle {
     }
 
     @Override
-    public void throwOnInvalid() {
-        var state = (ShapeState) this.isValid();
-        if (state != SquareState.OK)
-            throw new ShapeInvalidException(this, state);
-    }
-
-    @Override
     public ShapeState isValid() {
-        return this.a == this.b ? SquareState.OK : SquareState.WRONG_SQUARE_MEASURES;
+        return this.a == this.b ? ShapeState.State.OK : SquareState.WRONG_SQUARE_MEASURES;
     }
 }
