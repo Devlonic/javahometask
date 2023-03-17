@@ -11,5 +11,3 @@ public abstract class Triangle implements Shape {
         this.c = c;
     }
 }
-
-
