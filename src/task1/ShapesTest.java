@@ -14,6 +14,7 @@ public class ShapesTest {
     @Test(expected = ShapeInvalidException.class)
     public void testRightTriangleInvalidRange() {
         Shape s = new RightTriangle(0,0);
+        // will never be executed
         s.getArea();
     }
 }
