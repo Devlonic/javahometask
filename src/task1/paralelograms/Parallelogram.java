@@ -4,6 +4,7 @@ import task1.Shape;
 
 public abstract class Parallelogram extends Shape {
     enum ParallelogramState implements ShapeState {
+        INVALID_ANGLE("ANGLE must be in range (0;180)"),
         INVALID_ANGLES("ANGLES sum must be equal 360");
 
         private final String description;
@@ -35,7 +36,10 @@ public abstract class Parallelogram extends Shape {
 
     @Override
     public ShapeState isValid() {
-        if((this.angleDegreeAlpha + this.angleDegreeBeta) * 2 != 360)
+        if( (this.angleDegreeBeta < 0  || this.angleDegreeBeta > 180) || (this.angleDegreeAlpha < 0  || this.angleDegreeAlpha > 180))
+            return ParallelogramState.INVALID_ANGLE;
+
+        if((this.angleDegreeAlpha + this.angleDegreeBeta) * 2 != 360d)
             return ParallelogramState.INVALID_ANGLES;
 
         if(this.a <= 0 || this.b <= 0)

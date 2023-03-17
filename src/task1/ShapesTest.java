@@ -1,6 +1,7 @@
 package task1;
 
 import org.junit.Test;
+import task1.paralelograms.Rhombus;
 import task1.paralelograms.rectangles.Rectangle;
 import task1.paralelograms.rectangles.Square;
 import task1.triangles.RightTriangle;
@@ -45,5 +46,29 @@ public class ShapesTest {
         Shape s = new Square(4,2);
         // will never be executed
         assertEquals(8, s.getArea(), 0.000000000000001d);
+    }
+
+    @Test
+    public void testRhombusAreaMinRange() {
+        Shape s = new Rhombus(2, 1);
+        assertEquals(0.06980961122712853d, s.getArea(), 0.00001d);
+    }
+    @Test
+    public void testRhombusAreaMaxRange() {
+        Shape s = new Rhombus(2, 180);
+        assertEquals(0, s.getArea(), 0.00001d);
+    }
+
+
+    @Test(expected = ShapeInvalidException.class)
+    public void testRhombusAreaWrongAngle() {
+        Shape s = new Rhombus(2, 181);
+        assertEquals(3.4641d, s.getArea(), 0.00001d);
+    }
+
+    @Test(expected = ShapeInvalidException.class)
+    public void testRhombusAreaInvalidAngle() {
+        Shape s = new Rhombus(2, -1);
+        assertEquals(3.4641d, s.getArea(), 0.00001d);
     }
 }
