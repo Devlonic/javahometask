@@ -20,6 +20,9 @@ public class CurrencyExchanger {
     public enum Currencies {
         USD(1, 1),
         PLN(0.23, 4.41),
+        EUR(1.06, 0.94),
+        GBP(1.21, 0.82),
+        YEN(0.0076, 132.27),
         UAH(0.027, 36.93);
 
         private static Currencies mainCurrency;
