@@ -7,10 +7,14 @@ public class CurrencyExchanger {
     }
 
     public double convertTo(double originAmount, Currencies originCurrency, Currencies targetCurrency) {
-        if(originCurrency != Currencies.mainCurrency)
-            return originAmount * originCurrency.ratioToMainCurrency;
-        else
+        if(originCurrency != Currencies.mainCurrency && targetCurrency != Currencies.mainCurrency) {
+            var originToMainCurrency = convertTo(originAmount, originCurrency, Currencies.USD);
+            return convertTo(originToMainCurrency, Currencies.mainCurrency, targetCurrency);
+        } else if(originCurrency == Currencies.mainCurrency)
             return originAmount * targetCurrency.ratioFromMainCurrency;
+        else if(targetCurrency == Currencies.mainCurrency)
+            return originAmount * originCurrency.ratioToMainCurrency;
+        else return 0;
     }
 
     public enum Currencies {

@@ -18,4 +18,11 @@ public class CurrencyExchangeTest {
         double amount = ex.convertTo(1, CurrencyExchanger.Currencies.USD, CurrencyExchanger.Currencies.UAH);
         assertEquals(36.93, amount, 0.001);
     }
+
+    @Test
+    public void PLN_to_UAH_test() {
+        CurrencyExchanger ex = new CurrencyExchanger();
+        double amount = ex.convertTo(3, CurrencyExchanger.Currencies.PLN, CurrencyExchanger.Currencies.UAH);
+        assertEquals(25.1, amount, 1);
+    }
 }
