@@ -103,7 +103,14 @@ public class Vocabulary implements LanguageVocabulary {
 
     @Override
     public boolean addWordTranslation(String word, String newTranslation) {
-        return false;
+        if(word == null || newTranslation == null)
+            return false;
+
+        if(!dictionary.containsKey(word))
+            return false;
+
+        var o = dictionary.get(word);
+        return o.addTranslation(newTranslation);
     }
 
     @Override
