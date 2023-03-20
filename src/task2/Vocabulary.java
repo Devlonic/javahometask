@@ -1,12 +1,14 @@
 package task2;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Vocabulary implements LanguageVocabulary {
     class Word {
         private Vocabulary vocabulary;
         private String original;
         private Set<String> translations = new HashSet<>();
+        private int countRequestsToTranslations = 0;
 
         public Word(Vocabulary vocabulary, String original, String translation) {
             this.vocabulary = vocabulary;
@@ -19,9 +21,11 @@ public class Vocabulary implements LanguageVocabulary {
         }
 
         public List<String> getTranslations() {
+            countRequestsToTranslations++;
             return translations.stream().toList();
         }
         public boolean setTranslations(List<String> translations) {
+            countRequestsToTranslations = 0;
             this.translations = new HashSet<>(translations);
             return true;
         }
@@ -34,6 +38,10 @@ public class Vocabulary implements LanguageVocabulary {
         }
         public boolean changeTranslation(String oldTranslation, String newTranslation) {
             return translations.remove(oldTranslation) && translations.add(newTranslation);
+        }
+
+        public int getCountRequestsToTranslations() {
+            return countRequestsToTranslations;
         }
     }
 
@@ -150,11 +158,25 @@ public class Vocabulary implements LanguageVocabulary {
 
     @Override
     public List<String> getTopPopularWords() {
-        return null;
+        List<String> result = new ArrayList<>();
+        var words = dictionary.values();
+        var l = words.stream().
+                sorted(Comparator.comparing(Word::getCountRequestsToTranslations).reversed()).
+                limit(10).
+                map(w-> w.original).
+                collect(Collectors.toList());
+        return l;
     }
 
     @Override
     public List<String> getTopUnPopularWords() {
-        return null;
+        List<String> result = new ArrayList<>();
+        var words = dictionary.values();
+        var l = words.stream().
+                sorted(Comparator.comparing(Word::getCountRequestsToTranslations)).
+                limit(10).
+                map(w-> w.original).
+                collect(Collectors.toList());
+        return l;
     }
 }

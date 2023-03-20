@@ -2,6 +2,11 @@ package task2;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 import static org.junit.Assert.*;
 
 public class VocabularyTest {
@@ -168,5 +173,69 @@ public class VocabularyTest {
 
         assertFalse(vocabulary.changeWordTranslation("Main", "qОсновний", null));
         assertArrayEquals(new Object[]{"Головний", "qОсновний" }, vocabulary.translate("Main").toArray());
+    }
+
+    static Random r = new Random();
+    private String getRandomString(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char)(r.nextInt('z' - 'a') + 'a'));
+        }
+        return sb.toString();
+    }
+
+    @Test
+    public void getTopPopularWords_normal() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        List<String> existingWords = new ArrayList<>();
+
+        for (int i = 0; i < 100; i++) {
+            var word = getRandomString(12);
+            existingWords.add(word);
+            vocabulary.addWord(word, getRandomString(12));
+            for (int j = 0; j < 4; j++) {
+                vocabulary.addWordTranslation(word, getRandomString(12));
+            }
+        }
+
+        for (int i = 99; i >= 0; i--) {
+            var word = existingWords.get(i);
+            for (int j = 0; j < i; j++) {
+                vocabulary.translate(word);
+            }
+        }
+
+        var firstWords = existingWords.subList(90, 100);
+        Collections.reverse(firstWords);
+
+        assertArrayEquals(firstWords.toArray(), vocabulary.getTopPopularWords().toArray());
+    }
+
+    @Test
+    public void getTopUnPopularWords_normal() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        List<String> existingWords = new ArrayList<>();
+
+        for (int i = 0; i < 100; i++) {
+            var word = getRandomString(12);
+            existingWords.add(word);
+            vocabulary.addWord(word, getRandomString(12));
+            for (int j = 0; j < 4; j++) {
+                vocabulary.addWordTranslation(word, getRandomString(12));
+            }
+        }
+
+        for (int i = 99; i >= 0; i--) {
+            var word = existingWords.get(i);
+            for (int j = 0; j < i; j++) {
+                vocabulary.translate(word);
+            }
+        }
+
+        var firstWords = existingWords.subList(0, 10);
+
+        assertArrayEquals(firstWords.toArray(), vocabulary.getTopUnPopularWords().toArray());
     }
 }
