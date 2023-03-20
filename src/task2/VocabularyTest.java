@@ -111,4 +111,38 @@ public class VocabularyTest {
         assertFalse(vocabulary.addWordTranslation("Main", null));
         assertArrayEquals(new Object[]{ "Основний" }, vocabulary.translate("Main").toArray());
     }
+
+    @Test
+    public void removeTranslation_normal() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertTrue(vocabulary.addWord("Main", "qОсновний"));
+        assertTrue(vocabulary.addWordTranslation("Main", "Головний"));
+        assertArrayEquals(new Object[]{ "Головний", "qОсновний" }, vocabulary.translate("Main").toArray());
+
+        assertTrue(vocabulary.removeWordTranslation("Main", "qОсновний"));
+        assertArrayEquals(new Object[]{"Головний"}, vocabulary.translate("Main").toArray());
+    }
+
+    @Test
+    public void removeTranslation_lastTranslationInWord() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertTrue(vocabulary.addWord("Main", "qОсновний"));
+        assertArrayEquals(new Object[]{ "qОсновний" }, vocabulary.translate("Main").toArray());
+
+        assertFalse(vocabulary.removeWordTranslation("Main", "qОсновний"));
+        assertArrayEquals(new Object[]{"qОсновний"}, vocabulary.translate("Main").toArray());
+    }
+
+    @Test
+    public void removeTranslation_nulls() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertTrue(vocabulary.addWord("Main", "qОсновний"));
+        assertArrayEquals(new Object[]{ "qОсновний" }, vocabulary.translate("Main").toArray());
+
+        assertFalse(vocabulary.removeWordTranslation("Main", null));
+        assertArrayEquals(new Object[]{"qОсновний"}, vocabulary.translate("Main").toArray());
+    }
 }

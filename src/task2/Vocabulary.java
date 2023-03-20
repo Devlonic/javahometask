@@ -29,6 +29,9 @@ public class Vocabulary implements LanguageVocabulary {
         public boolean addTranslation(String translation) {
             return translations.add(translation);
         }
+        public boolean removeTranslation(String translation) {
+            return translations.remove(translation);
+        }
     }
 
     private String originalLanguage;
@@ -115,7 +118,18 @@ public class Vocabulary implements LanguageVocabulary {
 
     @Override
     public boolean removeWordTranslation(String word, String translation) {
-        return false;
+        if(word == null || translation == null)
+            return false;
+
+        if(!dictionary.containsKey(word))
+            return false;
+
+        var o = dictionary.get(word);
+
+        if(o.translations.size() == 1)
+            return false;
+
+        return o.removeTranslation(translation);
     }
 
     @Override
