@@ -32,6 +32,9 @@ public class Vocabulary implements LanguageVocabulary {
         public boolean removeTranslation(String translation) {
             return translations.remove(translation);
         }
+        public boolean changeTranslation(String oldTranslation, String newTranslation) {
+            return translations.remove(oldTranslation) && translations.add(newTranslation);
+        }
     }
 
     private String originalLanguage;
@@ -134,7 +137,15 @@ public class Vocabulary implements LanguageVocabulary {
 
     @Override
     public boolean changeWordTranslation(String word, String oldTranslation, String newTranslation) {
-        return false;
+        if(word == null || oldTranslation == null || newTranslation == null)
+            return false;
+
+        if(!dictionary.containsKey(word))
+            return false;
+
+        var o = dictionary.get(word);
+
+        return o.changeTranslation(oldTranslation, newTranslation);
     }
 
     @Override
