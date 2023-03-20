@@ -42,6 +42,9 @@ public class Vocabulary implements LanguageVocabulary {
 
     @Override
     public boolean addWord(String word, String firstTranslation) {
+        if(word == null || firstTranslation == null)
+            return false;
+
         if(dictionary.containsKey(word))
             return false;
 

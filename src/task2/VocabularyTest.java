@@ -1,18 +1,13 @@
 package task2;
 
-
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
-class VocabularyTest {
+public class VocabularyTest {
     @Test
-    void translate() {
-    }
-
-    @Test
-    void addWord_testNull() {
-        LanguageVocabulary vocabulary = new Vocabulary("English", "Ukrainian");
+    public void addWord_null() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
 
         assertFalse(vocabulary.addWord(null, null));
         assertFalse(vocabulary.addWord("Apple", null));
@@ -20,30 +15,33 @@ class VocabularyTest {
     }
 
     @Test
-    void removeWord() {
+    public void addWord_normal() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertTrue(vocabulary.addWord("Pineapple", "Ананас"));
     }
 
     @Test
-    void changeWord() {
+    public void addWord_alreadyExist() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertTrue(vocabulary.addWord("Pineapple", "Ананас"));
+        assertFalse(vocabulary.addWord("Pineapple", "Ананас123"));
     }
 
     @Test
-    void addWordTranslation() {
+    public void translateWord_normal() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertTrue(vocabulary.addWord("Pineapple", "Ананас"));
+        assertArrayEquals(vocabulary.translate("Pineapple").toArray(), new Object[]{ "Ананас" });
     }
 
     @Test
-    void removeWordTranslation() {
-    }
+    public void translateWord_unknown() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
 
-    @Test
-    void changeWordTranslation() {
-    }
-
-    @Test
-    void getTopPopularWords() {
-    }
-
-    @Test
-    void getTopUnPopularWords() {
+        assertTrue(vocabulary.addWord("Pineapple", "Ананас"));
+        assertEquals(vocabulary.translate("Apple"), null);
     }
 }
