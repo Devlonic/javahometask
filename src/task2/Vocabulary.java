@@ -13,9 +13,17 @@ public class Vocabulary implements LanguageVocabulary {
             this.original = original;
             this.addTranslation(translation);
         }
+        private Word(Vocabulary vocabulary, String original) {
+            this.vocabulary = vocabulary;
+            this.original = original;
+        }
 
         public List<String> getTranslations() {
             return translations.stream().toList();
+        }
+        public boolean setTranslations(List<String> translations) {
+            this.translations = new HashSet<>(translations);
+            return true;
         }
 
         public boolean addTranslation(String translation) {
@@ -53,6 +61,18 @@ public class Vocabulary implements LanguageVocabulary {
         // always null
         return added == null;
     }
+    private Word addWord(String word) {
+        if(word == null)
+            return null;
+
+        if(dictionary.containsKey(word))
+            return null;
+
+        var wordObj = new Word(this, word);
+        var added = dictionary.put(word, wordObj);
+
+        return wordObj;
+    }
 
     @Override
     public boolean removeWord(String word) {
@@ -67,7 +87,18 @@ public class Vocabulary implements LanguageVocabulary {
 
     @Override
     public boolean changeWord(String word, String newWord) {
-        return false;
+        if(word == null || newWord == null)
+            return false;
+
+        if(!dictionary.containsKey(word))
+            return false;
+
+        var translations = this.translate(word);
+
+        this.removeWord(word);
+        var success = this.addWord(newWord).setTranslations(translations);
+
+        return success;
     }
 
     @Override

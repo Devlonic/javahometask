@@ -54,4 +54,29 @@ public class VocabularyTest {
         assertTrue(vocabulary.removeWord("Pineapple"));
         assertEquals( null, vocabulary.translate("Pineapple"));
     }
+
+    @Test
+    public void changeWord_normal() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertTrue(vocabulary.addWord("Pieapple", "Ананас"));
+        assertTrue(vocabulary.changeWord("Pieapple", "Pineapple"));
+
+        assertArrayEquals( new Object[]{ "Ананас" }, vocabulary.translate("Pineapple").toArray());
+    }
+
+    @Test
+    public void changeWord_nulls() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertFalse(vocabulary.addWord(null, null));
+        assertFalse(vocabulary.changeWord(null, "Hello"));
+    }
+
+    @Test
+    public void changeWord_notExists() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertFalse(vocabulary.changeWord("Pieapple", "Pineapple"));
+    }
 }
