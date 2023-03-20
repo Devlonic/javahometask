@@ -34,7 +34,7 @@ public class VocabularyTest {
         Vocabulary vocabulary = new Vocabulary("English", "Українська");
 
         assertTrue(vocabulary.addWord("Pineapple", "Ананас"));
-        assertArrayEquals(vocabulary.translate("Pineapple").toArray(), new Object[]{ "Ананас" });
+        assertArrayEquals(new Object[]{ "Ананас" }, vocabulary.translate("Pineapple").toArray());
     }
 
     @Test
@@ -42,6 +42,16 @@ public class VocabularyTest {
         Vocabulary vocabulary = new Vocabulary("English", "Українська");
 
         assertTrue(vocabulary.addWord("Pineapple", "Ананас"));
-        assertEquals(vocabulary.translate("Apple"), null);
+        assertEquals( null, vocabulary.translate("Apple"));
+    }
+
+    @Test
+    public void removeWord_normal() {
+        Vocabulary vocabulary = new Vocabulary("English", "Українська");
+
+        assertTrue(vocabulary.addWord("Pineapple", "Ананас"));
+        assertArrayEquals(vocabulary.translate("Pineapple").toArray(), new Object[]{ "Ананас" });
+        assertTrue(vocabulary.removeWord("Pineapple"));
+        assertEquals( null, vocabulary.translate("Pineapple"));
     }
 }

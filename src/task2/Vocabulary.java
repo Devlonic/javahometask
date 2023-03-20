@@ -56,7 +56,13 @@ public class Vocabulary implements LanguageVocabulary {
 
     @Override
     public boolean removeWord(String word) {
-        return false;
+        if(word == null)
+            return false;
+
+        if(!dictionary.containsKey(word))
+            return false;
+
+        return dictionary.remove(word) != null;
     }
 
     @Override
