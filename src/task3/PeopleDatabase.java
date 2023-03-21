@@ -6,6 +6,9 @@ public class PeopleDatabase {
     private HashMap<String, Person> people = new HashMap<>();
 
     public boolean addPerson(Person person) {
+        if(person == null)
+            return false;
+
         if(people.containsKey(person.getId()))
             return false;
 
@@ -13,6 +16,9 @@ public class PeopleDatabase {
     }
 
     public String printPerson(String id) {
+        if(id == null)
+            return "Wrong id";
+
         if(!people.containsKey(id))
             return "Not found";
 
@@ -20,6 +26,9 @@ public class PeopleDatabase {
     }
 
     public boolean addFine(String personId, String fine) {
+        if(personId == null || fine == null)
+            return false;
+
         if(!people.containsKey(personId))
             return false;
 

@@ -56,4 +56,18 @@ public class PeopleDatabaseTests {
         assertTrue(pd.addPerson(person));
         assertFalse(pd.addFine(person.getId()+"w", "Speed over limit"));
     }
+
+    @Test
+    public void all_nullsCheck() {
+        PeopleDatabase pd = new PeopleDatabase();
+
+        Person person = new Person("Ivan");
+
+        assertFalse(pd.addPerson(null));
+        assertTrue(pd.addPerson(person));
+        assertEquals("Wrong id", pd.printPerson(null));
+        assertFalse(pd.addFine(person.getId(), null));
+        assertFalse(pd.addFine(null, "Speed over limit"));
+        assertFalse(pd.addFine(null, null));
+    }
 }
