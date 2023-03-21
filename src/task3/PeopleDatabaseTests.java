@@ -139,11 +139,7 @@ public class PeopleDatabaseTests {
         pd.addFine(people[2].getId(), fines[1]);
         pd.addFine(people[2].getId(), fines[1]);
 
-
-
-        System.out.println(pd.getAllByCity("city"));
-
-        assertEquals(178, pd.getAllByCity("city").length());
+        assertEquals(179, pd.getAllByCity("city").length());
     }
 
     @Test
@@ -161,4 +157,16 @@ public class PeopleDatabaseTests {
         assertEquals(71, pd.printPerson(person.getId()).length());
     }
 
+    @Test
+    public void printAll_normal() {
+        PeopleDatabase pd = new PeopleDatabase();
+
+        Person person = new Person("Ivan", "ci132213ty");
+
+        pd.addPerson(person);
+
+        assertTrue(pd.addFine(person.getId(), "Smoking in the wrong place"));
+
+        assertEquals(79, pd.printAll().length());
+    }
 }

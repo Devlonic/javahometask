@@ -57,4 +57,10 @@ public class PeopleDatabase {
 
         return people.get(personId).removeFine(fine);
     }
+
+    public String printAll() {
+        return people.values().stream().map(p-> {
+            return String.format("Person ID: %s, Name: %s, City: %s, Fines: %s", p.getId(), p.getName(), p.getCity(), p.getFines());
+        }).collect(Collectors.joining("\n"));
+    }
 }
