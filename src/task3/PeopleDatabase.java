@@ -47,4 +47,14 @@ public class PeopleDatabase {
             return String.format("Person ID: %s, Name: %s, Fines: %s", p.getId(), p.getName(), p.getFines());
         }).collect(Collectors.joining("\n"));
     }
+
+    public boolean removeFine(String personId, String fine) {
+        if(personId == null || fine == null)
+            return false;
+
+        if(!people.containsKey(personId))
+            return false;
+
+        return people.get(personId).removeFine(fine);
+    }
 }

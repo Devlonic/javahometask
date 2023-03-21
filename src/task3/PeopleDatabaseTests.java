@@ -145,4 +145,20 @@ public class PeopleDatabaseTests {
 
         assertEquals(178, pd.getAllByCity("city").length());
     }
+
+    @Test
+    public void removeFine_normal() {
+        PeopleDatabase pd = new PeopleDatabase();
+
+        Person person = new Person("Ivan", "city");
+
+        assertTrue(pd.addPerson(person));
+        assertTrue(pd.addFine(person.getId(), "Speed over limit"));
+        assertTrue(pd.addFine(person.getId(), "Speed over limit"));
+        assertTrue(pd.addFine(person.getId(), "Smoking in the wrong place"));
+        assertEquals(99, pd.printPerson(person.getId()).length());
+        assertTrue(pd.removeFine(person.getId(), "Smoking in the wrong place"));
+        assertEquals(71, pd.printPerson(person.getId()).length());
+    }
+
 }

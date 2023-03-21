@@ -26,6 +26,10 @@ public class Person {
         return fines.add(fine);
     }
 
+    public boolean removeFine(String fine) {
+        return fines.remove(fine);
+    }
+
     public String getId() {
         return id;
     }
