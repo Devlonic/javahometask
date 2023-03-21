@@ -41,4 +41,10 @@ public class PeopleDatabase {
             return String.format("Person ID: %s, Name: %s", p.getId(), p.getName());
         }).collect(Collectors.joining("\n"));
     }
+
+    public String getAllByCity(String city) {
+        return people.values().stream().filter(p-> Objects.equals(p.getCity(), city)).map(p-> {
+            return String.format("Person ID: %s, Name: %s, Fines: %s", p.getId(), p.getName(), p.getFines());
+        }).collect(Collectors.joining("\n"));
+    }
 }

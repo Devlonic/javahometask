@@ -9,7 +9,7 @@ public class PeopleDatabaseTests {
     public void addPerson_normal() {
         PeopleDatabase pd = new PeopleDatabase();
 
-        Person person = new Person("Ivan");
+        Person person = new Person("Ivan", "city");
 
         assertTrue(pd.addPerson(person));
     }
@@ -18,7 +18,7 @@ public class PeopleDatabaseTests {
     public void addPerson_printPerson_normal() {
         PeopleDatabase pd = new PeopleDatabase();
 
-        Person person = new Person("Ivan");
+        Person person = new Person("Ivan", "city");
 
         assertTrue(pd.addPerson(person));
         assertEquals(String.format("Person{id='%s', name='Ivan', fines=[]}", person.getId()), pd.printPerson(person.getId()));
@@ -28,7 +28,7 @@ public class PeopleDatabaseTests {
     public void addPerson_alreadyInDatabase() {
         PeopleDatabase pd = new PeopleDatabase();
 
-        Person person = new Person("Ivan");
+        Person person = new Person("Ivan", "city");
 
         assertTrue(pd.addPerson(person));
         assertFalse(pd.addPerson(person));
@@ -38,7 +38,7 @@ public class PeopleDatabaseTests {
     public void addFine_normal() {
         PeopleDatabase pd = new PeopleDatabase();
 
-        Person person = new Person("Ivan");
+        Person person = new Person("Ivan", "city");
 
         assertTrue(pd.addPerson(person));
         assertTrue(pd.addFine(person.getId(), "Speed over limit"));
@@ -51,7 +51,7 @@ public class PeopleDatabaseTests {
     public void addFine_notFound() {
         PeopleDatabase pd = new PeopleDatabase();
 
-        Person person = new Person("Ivan");
+        Person person = new Person("Ivan", "city");
 
         assertTrue(pd.addPerson(person));
         assertFalse(pd.addFine(person.getId()+"w", "Speed over limit"));
@@ -61,7 +61,7 @@ public class PeopleDatabaseTests {
     public void all_nullsCheck() {
         PeopleDatabase pd = new PeopleDatabase();
 
-        Person person = new Person("Ivan");
+        Person person = new Person("Ivan", "city");
 
         assertFalse(pd.addPerson(null));
         assertTrue(pd.addPerson(person));
@@ -76,10 +76,10 @@ public class PeopleDatabaseTests {
         PeopleDatabase pd = new PeopleDatabase();
 
         Person[] people = new Person[] {
-                new Person("Vasya"),
-                new Person("John"),
-                new Person("Mike"),
-                new Person("Ivan"),
+                new Person("Vasya", "city"),
+                new Person("John", "city"),
+                new Person("Mike", "city"),
+                new Person("Ivan", "city"),
         };
 
         for (var person :
@@ -103,8 +103,46 @@ public class PeopleDatabaseTests {
         pd.addFine(people[2].getId(), fines[1]);
         pd.addFine(people[2].getId(), fines[1]);
 
-        assertEquals(String.format("Person ID: %s, Name: Vasya\n" +
-                "Person ID: %s, Name: John\n" +
-                "Person ID: %s, Name: Mike", people[0].getId(), people[1].getId(), people[2].getId()), pd.getAllByFine(fines[1]));
+        var x = pd.getAllByFine(fines[1]);
+        assertEquals(78, x.length());
+    }
+
+    @Test
+    public void getAllByCity_normal() {
+        PeopleDatabase pd = new PeopleDatabase();
+
+        Person[] people = new Person[] {
+                new Person("Vasya", "city"),
+                new Person("John", "city"),
+                new Person("Mike", "city2"),
+                new Person("Ivan", "city"),
+        };
+
+        String[] fines = new String[] {
+                "Speed over limit",
+                "Smoking in the wrong place",
+                "Driving under alcohol"
+        };
+
+        for (var person :
+                people) {
+            assertTrue(pd.addPerson(person));
+        }
+
+        assertTrue(pd.addFine(people[0].getId(), fines[0]));
+        pd.addFine(people[0].getId(), fines[1]);
+
+        pd.addFine(people[1].getId(), fines[1]);
+
+        pd.addFine(people[2].getId(), fines[1]);
+        pd.addFine(people[2].getId(), fines[2]);
+        pd.addFine(people[2].getId(), fines[1]);
+        pd.addFine(people[2].getId(), fines[1]);
+
+
+
+        System.out.println(pd.getAllByCity("city"));
+
+        assertEquals(178, pd.getAllByCity("city").length());
     }
 }

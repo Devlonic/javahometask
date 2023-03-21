@@ -10,11 +10,14 @@ public class Person {
     private String name;
     private List<String> fines = new LinkedList<>();
 
+    private String city;
+
     private String getNewId() {
         return String.valueOf(countCreated++);
     }
 
-    public Person(String name) {
+    public Person(String name, String city) {
+        this.city = city;
         this.id = getNewId();
         this.name = name;
     }
@@ -33,6 +36,10 @@ public class Person {
 
     public List<String> getFines() {
         return fines.stream().toList();
+    }
+
+    public String getCity() {
+        return city;
     }
 
     @Override
