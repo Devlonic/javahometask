@@ -19,8 +19,8 @@ public class Person {
         this.name = name;
     }
 
-    public void addFine(String fine) {
-        fines.add(fine);
+    public boolean addFine(String fine) {
+        return fines.add(fine);
     }
 
     public String getId() {

@@ -18,4 +18,11 @@ public class PeopleDatabase {
 
         return people.get(id).toString();
     }
+
+    public boolean addFine(String personId, String fine) {
+        if(!people.containsKey(personId))
+            return false;
+
+        return people.get(personId).addFine(fine);
+    }
 }
