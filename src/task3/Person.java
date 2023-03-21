@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Person {
-    private int countCreated = 0;
+    private static int countCreated = 0;
 
     private String id;
     private String name;

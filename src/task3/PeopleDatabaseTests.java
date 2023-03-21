@@ -21,7 +21,7 @@ public class PeopleDatabaseTests {
         Person person = new Person("Ivan");
 
         assertTrue(pd.addPerson(person));
-        assertEquals("Person{id='0', name='Ivan', fines=[]}", pd.printPerson("0"));
+        assertEquals(String.format("Person{id='%s', name='Ivan', fines=[]}", person.getId()), pd.printPerson(person.getId()));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class PeopleDatabaseTests {
         assertTrue(pd.addFine(person.getId(), "Speed over limit"));
         assertTrue(pd.addFine(person.getId(), "Speed over limit"));
         assertTrue(pd.addFine(person.getId(), "Smoking in the wrong place"));
-        assertEquals("Person{id='0', name='Ivan', fines=[Speed over limit, Speed over limit, Smoking in the wrong place]}", pd.printPerson(person.getId()));
+        assertEquals("Person{id='1', name='Ivan', fines=[Speed over limit, Speed over limit, Smoking in the wrong place]}", pd.printPerson(person.getId()));
     }
 
     @Test
@@ -69,5 +69,42 @@ public class PeopleDatabaseTests {
         assertFalse(pd.addFine(person.getId(), null));
         assertFalse(pd.addFine(null, "Speed over limit"));
         assertFalse(pd.addFine(null, null));
+    }
+
+    @Test
+    public void getAllByFine_normal() {
+        PeopleDatabase pd = new PeopleDatabase();
+
+        Person[] people = new Person[] {
+                new Person("Vasya"),
+                new Person("John"),
+                new Person("Mike"),
+                new Person("Ivan"),
+        };
+
+        for (var person :
+                people) {
+            assertTrue(pd.addPerson(person));
+        }
+
+        String[] fines = new String[] {
+                "Speed over limit",
+                "Smoking in the wrong place",
+                "Driving under alcohol"
+        };
+
+        pd.addFine(people[0].getId(), fines[0]);
+        pd.addFine(people[0].getId(), fines[1]);
+
+        pd.addFine(people[1].getId(), fines[1]);
+
+        pd.addFine(people[2].getId(), fines[1]);
+        pd.addFine(people[2].getId(), fines[2]);
+        pd.addFine(people[2].getId(), fines[1]);
+        pd.addFine(people[2].getId(), fines[1]);
+
+        assertEquals(String.format("Person ID: %s, Name: Vasya\n" +
+                "Person ID: %s, Name: John\n" +
+                "Person ID: %s, Name: Mike", people[0].getId(), people[1].getId(), people[2].getId()), pd.getAllByFine(fines[1]));
     }
 }

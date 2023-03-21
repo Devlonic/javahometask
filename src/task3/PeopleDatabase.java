@@ -1,6 +1,7 @@
 package task3;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PeopleDatabase {
     private HashMap<String, Person> people = new HashMap<>();
@@ -33,5 +34,11 @@ public class PeopleDatabase {
             return false;
 
         return people.get(personId).addFine(fine);
+    }
+
+    public String getAllByFine(String fine) {
+        return people.values().stream().filter(p->p.getFines().contains(fine)).map(p-> {
+            return String.format("Person ID: %s, Name: %s", p.getId(), p.getName());
+        }).collect(Collectors.joining("\n"));
     }
 }
