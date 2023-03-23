@@ -8,6 +8,24 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+class Division {
+    private int numerator;
+    private int denominator;
+
+    public Division(int numerator, int denominator) {
+        this.numerator = numerator;
+        this.denominator = denominator;
+    }
+
+    public int getNumerator() {
+        return numerator;
+    }
+
+    public int getDenominator() {
+        return denominator;
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
         // task1
@@ -46,5 +64,37 @@ public class Main {
         //task2
         //1
 
+        BiFunction<Division, Division, Double> sum = (d1,d2)-> {
+          if(d1.getDenominator()==d2.getDenominator())
+              return (d1.getNumerator()+d2.getNumerator())/((double)d1.getDenominator());
+
+          throw new RuntimeException("Not implemented");
+        };
+
+        System.out.println(sum.apply(new Division(2,3), new Division(1,3)));
+
+        //2
+        BiFunction<Division, Division, Double> substraction = (d1,d2)-> {
+            if(d1.getDenominator()==d2.getDenominator())
+                return (d1.getNumerator()-d2.getNumerator())/((double)d1.getDenominator());
+
+            throw new RuntimeException("Not implemented");
+        };
+
+        System.out.println(substraction.apply(new Division(5,3), new Division(5,3)));
+
+        //3
+        BiFunction<Division, Division, Double> multiplication = (d1,d2)-> {
+            return (d1.getNumerator()*d2.getNumerator())/(double)(d1.getDenominator()*d2.getDenominator());
+        };
+
+        System.out.println(multiplication.apply(new Division(2,3), new Division(1,2)));
+
+        //4
+        BiFunction<Division, Division, Double> division = (d1,d2)-> {
+            return (d1.getNumerator()*d2.getDenominator())/(double)(d1.getDenominator()*d2.getNumerator());
+        };
+
+        System.out.println(division.apply(new Division(4,15), new Division(2,3)));
     }
 }
