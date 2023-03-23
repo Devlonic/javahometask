@@ -2,6 +2,7 @@ import java.time.LocalDate;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -96,5 +97,22 @@ public class Main {
         };
 
         System.out.println(division.apply(new Division(4,15), new Division(2,3)));
+
+        //task3
+        FourGetter<Integer> min = (v1, v2, v3, v4) -> {
+            return Stream.builder().add(v1).add(v2).add(v3).add(v4).build().mapToInt(v->(int)v).min().getAsInt();
+        };
+
+        System.out.println(min.get(4,6,-2,55));
+
+        FourGetter<Integer> max = (v1, v2, v3, v4) -> {
+            return Stream.builder().add(v1).add(v2).add(v3).add(v4).build().mapToInt(v->(int)v).max().getAsInt();
+        };
+
+        System.out.println(max.get(4,6,-2,55));
     }
+}
+
+interface FourGetter<T> {
+    T get(T v1, T v2, T v3, T v4);
 }
