@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.io.File;
 import java.io.IOException;
@@ -220,11 +221,112 @@ class Task3 {
 
 }
 
+class Task4 {
+    public static void start() {
+        String directory;
+        String searchWord;
+        String prohibited = "prohibited.txt";
+        var s = new Scanner(System.in);
+        System.out.println("Enter directory: ");
+        directory = s.nextLine();
+        System.out.println("Enter search word: ");
+        searchWord = s.nextLine();
+
+        String resultFile = String.format("./%s_result.txt", directory);
+
+        var t1 = new Thread(()->{
+            try {
+                var f1 = new File(resultFile);
+                if(!f1.exists())
+                    f1.createNewFile();
+                else {
+                    f1.delete();
+                    f1.createNewFile();
+                }
+
+                Files.walk(Paths.get(directory)).forEach((f)->{
+                    if(!Files.isDirectory(f)) {
+                        try {
+                            boolean found = false;
+                            Scanner fs = new Scanner(f.toFile());
+                            while (fs.hasNextLine()) {
+                                var l = fs.nextLine();
+                                if(l.contains(searchWord))
+                                    found = true;
+                            }
+
+
+
+                            if(found) {
+                                Files.lines(f).forEach(l-> {
+                                    try {
+                                        Files.write(Paths.get(resultFile), (l + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                });
+                            }
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        var t2 = new Thread(()->{
+            try {
+                t1.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                var temp = File.createTempFile(directory, UUID.randomUUID().toString());
+                var prohibitedWords = Files.readAllLines(Paths.get(prohibited));
+                FileWriter tempFw = new FileWriter(temp);
+                Scanner fs = new Scanner(new File(resultFile));
+                while (fs.hasNext()) {
+                    var line = fs.nextLine();
+                    for (var prohibitedWord :
+                            prohibitedWords) {
+                        line = line.replaceAll(prohibitedWord, "");
+                    }
+                    tempFw.write(line + "\r\n");
+                }
+                fs.close();
+                tempFw.flush();
+                tempFw.close();
+
+                Files.delete(Paths.get(resultFile));
+                Files.copy(temp.toPath(), Paths.get(resultFile));
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        t1.start();
+        t2.start();
+
+
+        try {
+            t1.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
 
 public class Main {
     public static void main(String[] args) throws IOException {
         //Task1.start();
         //Task2.start();
-        Task3.start();
+        //Task3.start();
+        Task4.start();
     }
 }
