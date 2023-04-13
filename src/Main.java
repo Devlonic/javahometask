@@ -1,6 +1,10 @@
 import java.io.*;
-import java.sql.PreparedStatement;
 import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 class Task1 {
     public static void start() {
@@ -156,8 +160,71 @@ class Task2 {
     }
 }
 
+class Task3 {
+    public static void start() {
+        int[] arr = new int[10];
+
+        String oldDirectory;
+        String newDirectory;
+        var s = new Scanner(System.in);
+        System.out.println("Enter old directory: ");
+        oldDirectory = s.nextLine();
+        System.out.println("Enter new directory: ");
+        newDirectory = s.nextLine();
+
+        Thread t = new DirectoryCopyrator(oldDirectory, newDirectory);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    static class DirectoryCopyrator extends Thread {
+        String sourceFolderPath ;
+        String destinationFolderPath ;
+
+        public DirectoryCopyrator(String sourceFolderPath, String destinationFolderPath  ) {
+            this.sourceFolderPath = sourceFolderPath;
+            this.destinationFolderPath = destinationFolderPath  ;
+        }
+
+        @Override
+        public void run() {
+            try {
+                copyDirectory();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private void copyDirectory() throws IOException {
+            Path sourcePath = Paths.get(sourceFolderPath);
+            Path destinationPath = Paths.get(destinationFolderPath);
+            Files.walk(sourcePath)
+                    .forEach(source -> {
+                        try {
+                            Path destination = destinationPath.resolve(sourcePath.relativize(source));
+                            if (Files.isDirectory(source)) {
+                                Files.createDirectories(destination);
+                            } else {
+                                Files.copy(source, destination);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+            System.out.println("Copied!");
+        }
+    }
+
+}
+
+
 public class Main {
-    public static void main(String[] args) {
-        Task2.start();
+    public static void main(String[] args) throws IOException {
+        //Task1.start();
+        //Task2.start();
+        Task3.start();
     }
 }
