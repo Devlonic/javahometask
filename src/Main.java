@@ -1,9 +1,9 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.temporal.Temporal;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -111,11 +111,220 @@ class Task4 {
     }
 }
 
+class Task5 {
+    public static void start() {
+        Corporation c = new Corporation();
+        c.menu();
+    }
+
+    static class Corporation {
+        private String databaseFile;
+        private List<Employee> employees = new ArrayList<>();
+
+        public Corporation() {
+            this.databaseFile = "./dir/corporation.txt";
+            load();
+//            this.employees.add(new Employee("Ivan", "Smith", 23));
+//            this.employees.add(new Employee("Jane", "Kmith", 22));
+//            this.employees.add(new Employee("Jan", "Skads", 66));
+//            this.employees.add(new Employee("Kan", "Sannoff", 999));
+//            this.employees.add(new Employee("Van", "Hoenheim", 999));
+        }
+
+        public void menu() {
+            Scanner ui = new Scanner(System.in);
+            while (true) {
+                System.out.println("0\tExit");
+                System.out.println("1\tPrint all to console");
+                System.out.println("2\tSave all to file");
+                System.out.println("3\tLoad all from file");
+                System.out.println("4\tPrint by surname");
+                System.out.println("5\tPrint by age");
+                System.out.println("6\tPrint by first surname letter");
+                System.out.println("7\tDelete by surname");
+
+                switch (ui.nextInt()) {
+                    case 0:
+                        return;
+                    case 1: print(e->true, System.out); break;
+                    case 2: save(); break;
+                    case 3: load(); break;
+                    case 4: {
+                        System.out.print("Enter surname: ");
+                        var flush = ui.nextLine();
+                        printBySurname(ui.nextLine(), System.out);
+                        break;
+                    }
+                    case 5: {
+                        System.out.print("Enter age: ");
+//                        var flush = ui.nextInt();
+                        printByAge(ui.nextInt(), System.out);
+                        break;
+                    }
+                    case 6: {
+                        System.out.print("Enter letter: ");
+                        ui.nextLine();
+                        printByFirstLetter(ui.nextLine().charAt(0), System.out);
+                        break;
+                    }
+                    case 7: {
+                        System.out.print("Enter surname: ");
+                        var flush = ui.nextLine();
+                        deleteBySurname(ui.nextLine(), System.out);
+                        break;
+                    }
+                    default: break;
+                }
+                System.out.println("Press enter to continue");
+                ui.nextLine();
+                ui.nextLine();
+                // clear console
+                for (int i = 0; i < 50; i++) {
+                    System.out.println();
+                }
+            }
+        }
+
+        private void save() {
+            try(FileOutputStream fos = new FileOutputStream(this.databaseFile)) {
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(employees);
+                oos.close();
+                fos.close();
+                System.out.println("saved " + employees.stream().count() + " employees");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void load() {
+            try (FileInputStream fis = new FileInputStream(this.databaseFile)) {
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                this.employees = (ArrayList<Employee>)ois.readObject();
+                System.out.println("loaded " + this.employees.stream().count() + " employees");
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private Stream<Employee> getByPredicate(Predicate<Employee> predicate) {
+            return employees.stream().filter(predicate);
+        }
+
+        private void print(Predicate<Employee> predicate, PrintStream ps) {
+            getByPredicate(predicate).forEach(e->{
+                ps.println(e.toString());
+            });
+        }
+
+        private Employee getBySurname(String surname) {
+            var arr = getByPredicate(e->e.surname.equals(surname)).toArray();
+            if(arr.length == 0)
+                return null;
+            else
+                return (Employee)arr[0];
+        }
+        private Employee[] getByAge(int age) {
+            var arr = getByPredicate(e->e.age == age).toArray(Employee[]::new);
+            if(arr.length == 0)
+                return null;
+            else
+                return arr;
+        }
+        private Employee[] getByFirstLetter(char letter) {
+            var arr = getByPredicate(e->e.surname.toLowerCase().startsWith(Character.toString(letter).toLowerCase()) ).toArray(Employee[]::new);
+            if(arr.length == 0)
+                return null;
+            else
+                return arr;
+        }
+        private void printBySurname(String surname, PrintStream ps) {
+            var e = getBySurname(surname);
+            if(e == null)
+                ps.println("not found");
+            else
+                ps.println(e.toString());
+        }
+        private void deleteBySurname(String surname, PrintStream ps) {
+            var e = getBySurname(surname);
+            if(e == null)
+                ps.println("not found");
+            else {
+                employees.remove(e);
+                ps.println(e.toString() + " was removed");
+            }
+        }
+        private void printByAge(int age, PrintStream ps) {
+            var e = getByAge(age);
+            if(e == null)
+                ps.println("not found");
+            else
+                Arrays.stream(e).forEach(em->{
+                    ps.println(em.toString());
+                });
+        }
+        private void printByFirstLetter(char l, PrintStream ps) {
+            var e = getByFirstLetter(l);
+            if(e == null)
+                ps.println("not found");
+            else
+                Arrays.stream(e).forEach(em->{
+                    ps.println(em.toString());
+                });
+        }
+    }
+    static class Employee implements Serializable {
+        private String name;
+        private String surname;
+        private int age;
+
+        public Employee(String name, String surname, int age) {
+            this.name = name;
+            this.surname = surname;
+            this.age = age;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getSurname() {
+            return surname;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setSurname(String surname) {
+            this.surname = surname;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        @Override
+        public String toString() {
+            return "Employee{" +
+                    "name='" + name + '\'' +
+                    ", surname='" + surname + '\'' +
+                    ", age=" + age +
+                    '}';
+        }
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
 //        Task1.start();
 //        Task2.start();
 //        Task3.start();
-        Task4.start();
+//        Task4.start();
+        Task5.start();
     }
 }
