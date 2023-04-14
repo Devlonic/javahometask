@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -81,10 +82,40 @@ class Task3 {
         }
     }
 }
+
+class Task4 {
+    public static void start() {
+        String file1path = "./dir/saveFile1.txt";
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(1);
+        numbers.add(7);
+        numbers.add(3);
+        numbers.add(2);
+        numbers.add(123);
+        numbers.add(-1);
+        numbers.add(541);
+        try {
+            File dest = new File(file1path);
+            dest.createNewFile();
+            FileWriter fw = new FileWriter(dest);
+            fw.write(Arrays.toString(numbers.toArray()) + "\n");
+            fw.write(Arrays.toString(numbers.stream().mapToInt(Integer::intValue).filter(n->n%2==0).toArray()) + "\n");
+            fw.write(Arrays.toString(numbers.stream().mapToInt(Integer::intValue).filter(n->n%2!=0).toArray()) + "\n");
+            Collections.reverse(numbers);
+            fw.write(Arrays.toString(numbers.toArray()) + "\n");
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
 //        Task1.start();
 //        Task2.start();
-        Task3.start();
+//        Task3.start();
+        Task4.start();
     }
 }
